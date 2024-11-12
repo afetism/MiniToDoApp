@@ -28,17 +28,20 @@ function showLogin() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Registration failed');
+           throw new Error("No respond ok")
         }
         return response.json();
     })
     .then(data => {
         console.log("Registration successful:", data);
-       
         if (data.token) {
-            document.cookie = `access_token=${data.token}; path=/; secure; HttpOnly; SameSite=Strict; max-age=3600`;
+            document.cookie = `access_token=${data.token}; path=/; secure; SameSite=Lax; max-age=3600`;
+            console.log("Access token set in cookie:", document.cookie);
+            setTimeout(() => {
+                window.location.href = "/ToDo.html";
+            }, 100); 
         }
-        window.location.href="/ToDo.html"
+        
     })
     .catch(error => {
         console.error("Error during registration:", error);
@@ -58,9 +61,37 @@ function getAccessTokenCookie() {
 }
 
   function login() {
-    const username = document.getElementById("loginUsername").value;
+    const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    console.log("Logging in:", { username, password });
-    const token = getAccessTokenCookie();
+    fetch('http://localhost:5001/api/users/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+           throw new Error("No respond ok")
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("LogIn successful:", data);
+        if (data.token) {
+            document.cookie = `access_token=${data.token}; path=/; secure; SameSite=Lax; max-age=3600`;
+            console.log("Access token set in cookie:", document.cookie);
+            setTimeout(() => {
+                window.location.href = "/ToDo.html";
+            }, 100); 
+        }
+        
+    })
+    .catch(error => {
+        console.error("Error during registration:", error);
+    });
   }

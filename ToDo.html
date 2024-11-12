@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User ToDo</title>
+    <link rel="stylesheet" href="./toDoStyle.css">
 </head>
 <body>
-    
+    <div class="todo-container">
+        <div class="todo-input-container">
+            <input type="text" id="todoInput" class="todo-input" placeholder="Add a task">
+            <button class="todo-add-button" onclick="addTodo()">Add</button>
+        </div>
+        <ul id="todoList"></ul>
+    </div>
+    <script src="./todo.js"></script>
 </body>
 </html>
