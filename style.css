@@ -5,39 +5,39 @@
     box-sizing: border-box;
   }
   
-  /* HTML və Body üçün sıfırlama */
-  html, body {
-    height: 100%;
-    width: 100%;
-    font-family: Arial, sans-serif; /* Optional: Burada öz şriftinizi seçə bilərsiniz */
-  }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif; 
+}
   
-  /* Listelemeler ve başlıklar üçün sıfırlama */
-  ul, ol {
-    list-style: none;
-  }
   
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-  
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  table {
-    border-collapse: collapse;
-    border-spacing: 0;
-  }
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
 
 
 body {
@@ -50,7 +50,8 @@ body {
     margin: 0;
   }
   .container {
-    max-width: 400px;
+    
+    width: 400px;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;

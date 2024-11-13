@@ -1,28 +1,24 @@
-function getAccessTokenCookie() {
-    const name = "access_token=";
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const cookies = decodedCookie.split(';');
-    
-    for (let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i].trim();
-        if (cookie.startsWith(name)) {
-            return cookie.substring(name.length, cookie.length);
-        }
+function getCookieValue(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop().split(';').shift();
     }
-    
     return null; 
 }
+const token = getCookieValue('token');
+let todoCollection=[];
 
 document.addEventListener("DOMContentLoaded", () => {
-    const token = getAccessTokenCookie();
-
+    
+    
     if (!token) {
         console.error("No access token found. Redirecting to login page.");
-        window.location.href = "/login.html"; 
+        window.location.href = "/index.html"; 
         return;
     }
 
-    fetch('http://localhost:5001/api/todos', {
+    fetch('http://localhost:5001/todos', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -31,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(response => response.ok ? response.json() : Promise.reject("Failed to fetch todos"))
     .then(todos => {
+        todoCollection = [...todos]; 
+        console.log(todoCollection);
         const todoList = document.getElementById("todoList");
         todos.forEach(todo => {
             const listItem = document.createElement("li");
@@ -39,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
             listItem.className = "todo-item";
             listItem.innerHTML = `
                 ${listItem.textContent}
-                <button class="todo-delete-button" onclick="deleteTodo(this)">🗑️</button>
+                <button class="todo-delete-button" onclick="deleteTodo('${todo._id}',this)">🗑️</button>
             `;
             todoList.appendChild(listItem);
         });
@@ -48,18 +46,20 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Error fetching todos:", error);
     });
 });
+
+
 function addTodo() {
     const todoInput = document.getElementById("todoInput");
     const todoList = document.getElementById("todoList");
     const taskText = todoInput.value.trim();
-    const token = getAccessTokenCookie();
+   
 
     if (!token) {
         console.error("No access token found. Redirecting to login page.");
         window.location.href = "/login.html"; 
         return;
     }
-    fetch('http://localhost:5001/api/todos', {
+    fetch('http://localhost:5001/todos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ function addTodo() {
         todoItem.className = "todo-item";
         todoItem.innerHTML = `
             ${taskText}
-            <button class="todo-delete-button" onclick="deleteTodo(this)">🗑️</button>
+            <button class="todo-delete-button">🗑️</button>
         `;
         todoList.appendChild(todoItem);
         todoInput.value = "";
@@ -88,8 +88,29 @@ function addTodo() {
 
 }
 
-function deleteTodo(button) {
+async function deleteTodo(id, button) {
     const todoItem = button.parentElement;
-    
-    todoItem.remove();
+
+    try {
+       
+        const response = await fetch(`http://localhost:5001/todos/${id}`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete todo");
+        }
+
+        
+        todoItem.remove();
+        todoCollection = todoCollection.filter(todo => todo._id !== id);
+        console.log("Updated Todo Collection:", todoCollection);
+
+    } catch (e) {
+        console.error(`Error: ${e}`);
+    }
 }
