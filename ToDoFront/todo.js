@@ -5,12 +5,13 @@ function getCookieValue(name) {
         return parts.pop().split(';').shift();
     }
     return null; 
-}
+}  // cooki ucun 
 const token = getCookieValue('token');
+
+
 let todoCollection=[];
 
 document.addEventListener("DOMContentLoaded", () => {
-    
     
     if (!token) {
         console.error("No access token found. Redirecting to login page.");
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             listItem.className = "todo-item";
             listItem.innerHTML = `
                 ${listItem.textContent}
-                <button class="todo-delete-button" onclick="deleteTodo('${todo._id}',this)">🗑️</button>
+                <button class="todo-delete-button" onclick="deleteTodo('${todo._id}',this)"><i class="fa-solid fa-trash" style="color: #B197FC;"></i></button>
             `;
             todoList.appendChild(listItem);
         });
@@ -56,7 +57,7 @@ function addTodo() {
 
     if (!token) {
         console.error("No access token found. Redirecting to login page.");
-        window.location.href = "/login.html"; 
+        window.location.href = "/index.html"; 
         return;
     }
     fetch('http://localhost:5001/todos', {
@@ -79,9 +80,10 @@ function addTodo() {
         const todoItem = document.createElement("li");
         todoItem.className = "todo-item";
         todoItem.innerHTML = `
-            ${taskText}
-            <button class="todo-delete-button">🗑️</button>
-        `;
+        ${taskText}
+        <button class="todo-delete-button"><i class="fa-solid fa-trash" style="color: #B197FC;"></i></button>
+    `;
+
         todoList.appendChild(todoItem);
         todoInput.value = "";
     }

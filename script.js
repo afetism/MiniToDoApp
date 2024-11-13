@@ -37,7 +37,7 @@ const login = async()=>
     .then(data=>
     {
          document.cookie=`token=${data.token}; path=/; max-age=3600`;
-         window.location.href="/ToDoFront/ToDo.html"
+         window.location.href="ToDoFront/ToDo.html"
     })
     .catch(error=>
     {
@@ -46,35 +46,42 @@ const login = async()=>
 }
 
 
-const register=async()=>
-{
-    const registerUsername=document.getElementById('registerUsername').value;
-    const registerEmail=document.getElementById('registerEmail').value;
-    const registerPassword=document.getElementById('registerPassword').value;
- 
-    const myHeaders=new Headers();
-    myHeaders.append("Content-Type","application/json");
-    await fetch("http://localhost:5001/users/register",{
-      method:"POST",
-      body:JSON.stringify({
-        username: registerUsername,
-        email: registerEmail,
-        password: registerPassword
+function register() {
+    const username = document.getElementById("registerUsername").value;
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("registerPassword").value;
 
-      }),
-      headers:myHeaders
+    console.log("Registering:", { username, email, password });
+    
+    fetch('http://localhost:5001/users/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            username: username,
+            password: password
+        })
     })
-    .then(r=>{
-        if(!r.ok)
-            throw new Error("Error");
-        return r.json();
+    .then(response => {
+        if (!response.ok) {
+           throw new Error("No respond ok")
+        }
+        return response.json();
     })
-    .then(data=>{
-        document.cookie=`token=${data.token}; path=/; max-age=3600`;
-        window.location.href="/ToDoFront/ToDo.html"
+    .then(data => {
+        console.log("Registration successful:", data);
+        if (data.token) {
+            document.cookie = `access_token=${data.token}; path=/; secure; SameSite=Lax; max-age=3600`;
+            console.log("Access token set in cookie:", document.cookie);
+            setTimeout(() => {
+                window.location.href="ToDoFront/ToDo.html"
+            }, 100); 
+        }
+        
     })
-    .catch(error=>
-    {
-          console.error("An error occurred:", error);
+    .catch(error => {
+        console.error("Error during registration:", error);
     });
 }
